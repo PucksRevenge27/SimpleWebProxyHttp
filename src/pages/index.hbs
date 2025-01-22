@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Callm3batman's WebProxy</title>
+    <link rel="icon" href="https://cdn.glitch.global/6d96edd5-c35d-4881-ab22-d97501717a8a/logo.png?v=1737477670687" type="image/png">
+    <style>
+        /* General styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(45deg, red, orange, yellow, green, blue, indigo, violet);
+            background-size: cover;
+        }
+
+        form {
+            background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent background */
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .logo {
+            width: 100px;
+            margin-bottom: 20px;
+        }
+
+        .title {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+
+        button[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        button[type="submit"]:active {
+            background-color: #004494;
+        }
+
+        input[type="text"]:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+    </style>
+    <script>
+        // JavaScript function to apply ROT13 transformation
+        function rot13(str) {
+            return str.replace(/[a-zA-Z]/g, function (char) {
+                return String.fromCharCode(
+                    char.charCodeAt(0) + (char.toLowerCase() < 'n' ? 13 : -13)
+                );
+            });
+        }
+
+        // JavaScript function to handle form submission
+        function navigateToProxyURL(event) {
+            event.preventDefault(); // Prevent the form from submitting the traditional way
+            const url = document.getElementById('urlInput').value; // Get the value from the input field
+            const encodedUrl = rot13(url); // Apply ROT13 transformation
+            const proxy = "/proxy?url="; // Proxy endpoint
+            if (url) {
+                window.location.href = proxy + encodeURIComponent(encodedUrl); // Navigate to the proxy URL with the encoded URL
+            } else {
+                alert('Please enter a valid URL'); // Alert if the input is empty
+            }
+        }
+    </script>
+</head>
+<body>
+    <!-- Input field and button -->
+    <form onsubmit="navigateToProxyURL(event)">
+        <img src="https://cdn.glitch.global/6d96edd5-c35d-4881-ab22-d97501717a8a/logo.png?v=1737477670687" alt="Logo" class="logo">
+        <div class="title">Callm3batman's WebProxy</div>
+        <label for="urlInput">Enter URL:</label>
+        <input type="text" id="urlInput" name="url" placeholder="https://example.com">
+        <button type="submit">Go</button>
+    </form>
+</body>
+</html>
