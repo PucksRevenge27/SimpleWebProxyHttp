@@ -62,7 +62,7 @@ app.get('/proxy', (req, res) => {
             const href = anchor.getAttribute('href');
             if (href && !href.startsWith('#')) {
                 const absoluteUrl = new URL(href, baseUrl).href;
-                anchor.setAttribute('href', \`/proxy?url=\${absoluteUrl}\`);
+                anchor.setAttribute('href', `/proxy?url=${absoluteUrl}`);
             }
         });
 
@@ -71,7 +71,7 @@ app.get('/proxy', (req, res) => {
             const src = element.getAttribute('src');
             if (src) {
                 const absoluteUrl = new URL(src, baseUrl).href;
-                element.setAttribute('src', \`/proxy/asset?url=\${absoluteUrl}\`);
+                element.setAttribute('src', `/proxy/asset?url=${absoluteUrl}`);
             }
         });
 
