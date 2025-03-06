@@ -3,6 +3,7 @@ const request = require('request');
 const { JSDOM } = require('jsdom');
 const path = require('path');
 const exphbs = require('express-handlebars');
+const fs = require('fs');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -24,6 +25,9 @@ app.engine('.hbs', exphbs.engine({
 }));
 app.set('view engine', '.hbs');
 app.set('views', path.join(__dirname, 'src', 'pages'));
+
+// Serve static files from the public folder
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Route to render index.hbs
 app.get('/', (req, res) => {
@@ -49,6 +53,15 @@ app.get('/proxy', (req, res) => {
         const dom = new JSDOM(body);
         const document = dom.window.document;
         const baseUrl = new URL(url);
+
+        // Inject Eruda script
+        const erudaScript = document.createElement('script');
+        erudaScript.src = '/eruda.min.js';
+        document.body.appendChild(erudaScript);
+
+        const erudaInitScript = document.createElement('script');
+        erudaInitScript.textContent = 'eruda.init();';
+        document.body.appendChild(erudaInitScript);
 
         // Rewrite all anchor tags
         document.querySelectorAll('a').forEach(anchor => {
