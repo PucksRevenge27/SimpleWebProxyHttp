@@ -36,12 +36,10 @@ app.get('/', (req, res) => {
 
 // Proxy endpoint
 app.get('/proxy', (req, res) => {
-    const encodedUrl = req.query.url;
-    if (!encodedUrl) {
+    const url = req.query.url;
+    if (!url) {
         return res.status(400).send('URL parameter is required');
     }
-
-    const url = rot13(decodeURIComponent(encodedUrl)); // Decode the ROT13 URL
 
     // Fetch the main page
     request(url, (error, response, body) => {
@@ -59,8 +57,13 @@ app.get('/proxy', (req, res) => {
         erudaScript.src = '//cdn.jsdelivr.net/npm/eruda';
         document.body.appendChild(erudaScript);
 
+        // Inject Eruda initialization script after the Eruda script is loaded
         const erudaInitScript = document.createElement('script');
-        erudaInitScript.textContent = 'eruda.init();';
+        erudaInitScript.textContent = `
+            document.addEventListener('DOMContentLoaded', function() {
+                eruda.init();
+            });
+        `;
         document.body.appendChild(erudaInitScript);
 
         // Rewrite all anchor tags
@@ -68,7 +71,7 @@ app.get('/proxy', (req, res) => {
             const href = anchor.getAttribute('href');
             if (href && !href.startsWith('#')) {
                 const absoluteUrl = new URL(href, baseUrl).href;
-                anchor.setAttribute('href', `/proxy?url=${encodeURIComponent(rot13(absoluteUrl))}`);
+                anchor.setAttribute('href', `/proxy?url=${absoluteUrl}`);
             }
         });
 
@@ -77,7 +80,7 @@ app.get('/proxy', (req, res) => {
             const src = element.getAttribute('src');
             if (src) {
                 const absoluteUrl = new URL(src, baseUrl).href;
-                element.setAttribute('src', `/proxy/asset?url=${encodeURIComponent(rot13(absoluteUrl))}`);
+                element.setAttribute('src', `/proxy/asset?url=${absoluteUrl}`);
             }
         });
 
@@ -87,12 +90,10 @@ app.get('/proxy', (req, res) => {
 
 // Proxy endpoint for assets
 app.get('/proxy/asset', (req, res) => {
-    const encodedUrl = req.query.url;
-    if (!encodedUrl) {
+    const url = req.query.url;
+    if (!url) {
         return res.status(400).send('URL parameter is required');
     }
-
-    const url = rot13(decodeURIComponent(encodedUrl)); // Decode the ROT13 URL
 
     request(url).pipe(res);
 });
